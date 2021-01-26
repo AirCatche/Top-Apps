@@ -53,9 +53,7 @@ class MainActivity : AppCompatActivity() {
 
         applicationList?.layoutManager = mLayoutManager
 
-
         displayData()
-        mAdapter?.notifyDataSetChanged()
 
         Log.d(MainConstants.TAG, "onCreate: done")
     }
