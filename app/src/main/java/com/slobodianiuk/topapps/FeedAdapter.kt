@@ -1,10 +1,11 @@
 package com.slobodianiuk.topapps
 
-import android.text.method.ScrollingMovementMethod
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
@@ -66,9 +67,11 @@ class FeedAdapter<T : FeedEntry>(private val application: List<T>) : RecyclerVie
         val summary: TextView = itemView.findViewById(R.id.tvSummary)
         val price: TextView = itemView.findViewById(R.id.tvPrice)
 
-        init{
-            makeScrollable(summary)
-        }
+
+//        init {
+//            makeScrollable(summary)
+//        }
+
     }
 
 
@@ -77,12 +80,22 @@ class FeedAdapter<T : FeedEntry>(private val application: List<T>) : RecyclerVie
         val name: TextView = itemView.findViewById(R.id.tvName)
         val artist: TextView = itemView.findViewById(R.id.tvArtist)
         val summary: TextView = itemView.findViewById(R.id.tvSummary)
+        private val scroll: ScrollView = itemView.findViewById(R.id.summaryScroll)
 
-        init{
-            makeScrollable(summary)
+        init {
+            makeScrollable(scroll)
         }
+
     }
+
 }
-fun makeScrollable(textView: TextView) {
-    textView.movementMethod = (ScrollingMovementMethod())
+
+@SuppressLint("ClickableViewAccessibility")
+fun makeScrollable(scroll: ScrollView) {
+
+    scroll.setOnTouchListener(View.OnTouchListener() {
+        view, _ ->
+        view.parent.requestDisallowInterceptTouchEvent(true)
+        false
+    })
 }

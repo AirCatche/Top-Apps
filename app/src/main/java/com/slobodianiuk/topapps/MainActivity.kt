@@ -1,5 +1,6 @@
 package com.slobodianiuk.topapps
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -7,6 +8,8 @@ import android.os.PersistableBundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +26,6 @@ class MainActivity : AppCompatActivity() {
         const val STATE_LIMIT = "feedLimit"
         const val TAG = "LOG"
     }
-
     private var feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=%d/xml"
     private var feedLimit = 10
     private var feedCachedUrl = ""
@@ -32,11 +34,11 @@ class MainActivity : AppCompatActivity() {
     private var handler: Handler? = null
     private val thread = HandlerThread("Thread1")
 
-
-    private var applicationList: RecyclerView? = null
+    private var items: RecyclerView? = null
     private var mAdapter: FeedAdapter<FeedEntry>? = null
     private var mLayoutManager : RecyclerView.LayoutManager? = null
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -45,14 +47,19 @@ class MainActivity : AppCompatActivity() {
             feedUrl = savedInstanceState.getString(MainConstants.STATE_URL).toString()
             feedLimit = savedInstanceState.getInt(MainConstants.STATE_LIMIT)
         }
+        items = findViewById(R.id.xmlRecyclerView)
 
-        applicationList = findViewById(R.id.xmlRecyclerView)
-        mAdapter = FeedAdapter(appList)
-        mLayoutManager = LinearLayoutManager(this)
-        applicationList?.adapter = mAdapter
+        items.let {
+            it?.setOnTouchListener(object : View.OnTouchListener{
+                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                    return v?.onTouchEvent(event) ?: true
+                }
+            })
+        }
 
-        applicationList?.layoutManager = mLayoutManager
 
+
+        attachAdapter(items)
         displayData()
 
         Log.d(MainConstants.TAG, "onCreate: done")
@@ -67,8 +74,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        var id = item.itemId
-        when(id) {
+        when(item.itemId) {
             R.id.mnuFree -> feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=%d/xml"
             R.id.mnuPaid -> feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topalbums/limit=%d/xml"
             R.id.mnuSongs -> feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topsongs/limit=%d/xml"
@@ -86,6 +92,24 @@ class MainActivity : AppCompatActivity() {
         downloadUrl(handler, String.format(feedUrl, feedLimit))
         return true
     }
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        outState.putString(MainConstants.STATE_URL, feedUrl)
+        outState.putInt(MainConstants.STATE_LIMIT, feedLimit)
+        super.onSaveInstanceState(outState, outPersistentState)
+    }
+
+    private fun attachAdapter(rView : RecyclerView?) {
+        mAdapter = FeedAdapter(appList)
+        mLayoutManager = LinearLayoutManager(this)
+        rView?.adapter = mAdapter
+        rView?.layoutManager = mLayoutManager
+    }
+    private fun displayData() {
+        thread.start()
+        val looper = thread.looper
+        handler = Handler(looper)
+        downloadUrl(handler, String.format(feedUrl, feedLimit))
+    }
     private fun downloadUrl (h: Handler?, Url: String) {
         if (feedUrl != feedCachedUrl) {
             h?.post (object : Runnable {
@@ -97,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                         val feedAdapter = FeedAdapter(app.application)
                         runOnUiThread(object : Runnable {
                             override fun run() {
-                                applicationList?.adapter = feedAdapter
+                                items?.adapter = feedAdapter
                             }
                         })
                     }
@@ -105,14 +129,6 @@ class MainActivity : AppCompatActivity() {
             })
         }
     }
-
-    private fun displayData() {
-        thread.start()
-        val looper = thread.looper
-        handler = Handler(looper)
-        downloadUrl(handler, String.format(feedUrl, feedLimit))
-    }
-
     private fun downloadXml(urlPath: String) : String {
         val xmlResult = StringBuilder("")
         try {
@@ -142,9 +158,13 @@ class MainActivity : AppCompatActivity() {
         return ""
     }
 
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
-        outState.putString(MainConstants.STATE_URL, feedUrl)
-        outState.putInt(MainConstants.STATE_LIMIT, feedLimit)
-        super.onSaveInstanceState(outState, outPersistentState)
+ /*   fun makeTextViewScrollable() {
+        var a = findViewById(R.id.summaryScroll).
+        items?.setOnTouchListener(View.OnTouchListener {
+            fun onTouch(v: View, event: MotionEvent) : Boolean {
+
+            }
+        })
     }
+*/
 }
