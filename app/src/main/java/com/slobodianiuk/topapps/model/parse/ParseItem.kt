@@ -1,11 +1,11 @@
-package com.slobodianiuk.topapps
+package com.slobodianiuk.topapps.model.parse
 
 import android.util.Log
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.StringReader
 
-class ParseApplication {
+class ParseItem {
 
     private val tag = "Parse application"
     val application: ArrayList<FeedEntry> = arrayListOf()

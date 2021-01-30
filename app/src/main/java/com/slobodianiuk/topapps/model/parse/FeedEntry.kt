@@ -1,4 +1,4 @@
-package com.slobodianiuk.topapps
+package com.slobodianiuk.topapps.model.parse
 
 class FeedEntry {
     var name = ""

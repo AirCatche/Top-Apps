@@ -1,6 +1,5 @@
-package com.slobodianiuk.topapps
+ package com.slobodianiuk.topapps.presentation
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -8,11 +7,13 @@ import android.os.PersistableBundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.MotionEvent
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.slobodianiuk.topapps.R
+import com.slobodianiuk.topapps.model.parse.FeedEntry
+import com.slobodianiuk.topapps.model.parse.ParseItem
+import com.slobodianiuk.topapps.model.itemRecycler.FeedAdapter
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -35,10 +36,10 @@ class MainActivity : AppCompatActivity() {
     private val thread = HandlerThread("Thread1")
 
     private var items: RecyclerView? = null
-    private var mAdapter: FeedAdapter<FeedEntry>? = null
-    private var mLayoutManager : RecyclerView.LayoutManager? = null
+    private var itemAdapter: FeedAdapter<FeedEntry>? = null
+    private var itemLayoutManager : RecyclerView.LayoutManager? = null
 
-    @SuppressLint("ClickableViewAccessibility")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -47,23 +48,21 @@ class MainActivity : AppCompatActivity() {
             feedUrl = savedInstanceState.getString(MainConstants.STATE_URL).toString()
             feedLimit = savedInstanceState.getInt(MainConstants.STATE_LIMIT)
         }
-        items = findViewById(R.id.xmlRecyclerView)
 
+        items = findViewById(R.id.xmlRecyclerView)
         items.let {
-            it?.setOnTouchListener(object : View.OnTouchListener{
-                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                    return v?.onTouchEvent(event) ?: true
-                }
-            })
+            if (it != null) {
+                attachAdapter(it)
+            }
         }
 
 
-
-        attachAdapter(items)
         displayData()
-
         Log.d(MainConstants.TAG, "onCreate: done")
     }
+
+
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.feeds_menu, menu)
         if (feedLimit == 10) {
@@ -98,11 +97,11 @@ class MainActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState, outPersistentState)
     }
 
-    private fun attachAdapter(rView : RecyclerView?) {
-        mAdapter = FeedAdapter(appList)
-        mLayoutManager = LinearLayoutManager(this)
-        rView?.adapter = mAdapter
-        rView?.layoutManager = mLayoutManager
+    private fun attachAdapter(rView : RecyclerView) {
+        itemAdapter = FeedAdapter(appList,rView)
+        itemLayoutManager = LinearLayoutManager(this)
+        rView.adapter = itemAdapter
+        rView.layoutManager = itemLayoutManager
     }
     private fun displayData() {
         thread.start()
@@ -115,10 +114,10 @@ class MainActivity : AppCompatActivity() {
             h?.post (object : Runnable {
                 override fun run() {
                     rssFeed = downloadXml(Url)
-                    val app = ParseApplication()
+                    val app = ParseItem()
                     val success = app.parse(rssFeed)
                     if (success) {
-                        val feedAdapter = FeedAdapter(app.application)
+                        val feedAdapter = FeedAdapter(app.application,items!!)
                         runOnUiThread(object : Runnable {
                             override fun run() {
                                 items?.adapter = feedAdapter
@@ -158,13 +157,34 @@ class MainActivity : AppCompatActivity() {
         return ""
     }
 
- /*   fun makeTextViewScrollable() {
-        var a = findViewById(R.id.summaryScroll).
-        items?.setOnTouchListener(View.OnTouchListener {
-            fun onTouch(v: View, event: MotionEvent) : Boolean {
+   /* private fun recyclerViewListener(context: Context, rv: RecyclerView?) {
+        rv?.addOnItemTouchListener(RecyclerItemClickListener(context, rv, object : RecyclerViewItemOnClick {
+            override fun onItemClick(v: View?, position: Int) {
+                Toast.makeText(context, "TEST CLICK", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onLongItemClick(v: View?, position: Int) {
 
             }
-        })
-    }
-*/
+        }))
+    }*/
+    /*private fun recyclerListener(context: Context, rv: RecyclerView?) {
+       val itemListener = RecyclerItemClickListener(context, rv!!, object : ItemOnClick {
+
+           override fun onDoubleItemClick(v: View?, position: Int) {
+               val viewType = rv.findViewHolderForAdapterPosition(position)?.itemViewType
+               
+               Toast.makeText(context, "TEST DOUBLE CLICK ${position +1} item with view type $viewType", Toast.LENGTH_SHORT).show()
+           }
+
+           override fun onLongItemClick(v: View?, position: Int) {
+               Toast.makeText(context, "TEST LONG CLICK ${position +1} item", Toast.LENGTH_SHORT).show()
+           }
+       })
+
+       rv.setOnTouchListener(View.OnTouchListener { _, event ->
+           itemListener.gestureDetector!!.onTouchEvent(event)
+           false
+       })
+    }*/
 }
