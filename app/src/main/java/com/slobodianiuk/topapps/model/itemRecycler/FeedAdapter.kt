@@ -75,10 +75,10 @@ class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val i
 
             }
         })
-        itemRV.setOnTouchListener(View.OnTouchListener { _, event ->
+        itemRV.setOnTouchListener{ _, event ->
             itemListener.gestureDetector!!.onTouchEvent(event)
             false
-        })
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -123,9 +123,9 @@ class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val i
 @SuppressLint("ClickableViewAccessibility")
 fun makeScrollable(scroll: ScrollView) {
 
-    scroll.setOnTouchListener(View.OnTouchListener() {
+    scroll.setOnTouchListener {
         view, _ ->
         view.parent.requestDisallowInterceptTouchEvent(true)
         false
-    })
+    }
 }

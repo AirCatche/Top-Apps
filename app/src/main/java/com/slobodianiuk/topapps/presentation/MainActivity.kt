@@ -11,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.slobodianiuk.topapps.R
+import com.slobodianiuk.topapps.model.itemRecycler.FeedAdapter
 import com.slobodianiuk.topapps.model.parse.FeedEntry
 import com.slobodianiuk.topapps.model.parse.ParseItem
-import com.slobodianiuk.topapps.model.itemRecycler.FeedAdapter
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -111,21 +111,17 @@ class MainActivity : AppCompatActivity() {
     }
     private fun downloadUrl (h: Handler?, Url: String) {
         if (feedUrl != feedCachedUrl) {
-            h?.post (object : Runnable {
-                override fun run() {
-                    rssFeed = downloadXml(Url)
-                    val app = ParseItem()
-                    val success = app.parse(rssFeed)
-                    if (success) {
-                        val feedAdapter = FeedAdapter(app.application,items!!)
-                        runOnUiThread(object : Runnable {
-                            override fun run() {
-                                items?.adapter = feedAdapter
-                            }
-                        })
+            h?.post {
+                rssFeed = downloadXml(Url)
+                val app = ParseItem()
+                val success = app.parse(rssFeed)
+                if (success) {
+                    val feedAdapter = FeedAdapter(app.application, items!!)
+                    runOnUiThread {
+                        items?.adapter = feedAdapter
                     }
                 }
-            })
+            }
         }
     }
     private fun downloadXml(urlPath: String) : String {
@@ -156,35 +152,4 @@ class MainActivity : AppCompatActivity() {
         }
         return ""
     }
-
-   /* private fun recyclerViewListener(context: Context, rv: RecyclerView?) {
-        rv?.addOnItemTouchListener(RecyclerItemClickListener(context, rv, object : RecyclerViewItemOnClick {
-            override fun onItemClick(v: View?, position: Int) {
-                Toast.makeText(context, "TEST CLICK", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onLongItemClick(v: View?, position: Int) {
-
-            }
-        }))
-    }*/
-    /*private fun recyclerListener(context: Context, rv: RecyclerView?) {
-       val itemListener = RecyclerItemClickListener(context, rv!!, object : ItemOnClick {
-
-           override fun onDoubleItemClick(v: View?, position: Int) {
-               val viewType = rv.findViewHolderForAdapterPosition(position)?.itemViewType
-               
-               Toast.makeText(context, "TEST DOUBLE CLICK ${position +1} item with view type $viewType", Toast.LENGTH_SHORT).show()
-           }
-
-           override fun onLongItemClick(v: View?, position: Int) {
-               Toast.makeText(context, "TEST LONG CLICK ${position +1} item", Toast.LENGTH_SHORT).show()
-           }
-       })
-
-       rv.setOnTouchListener(View.OnTouchListener { _, event ->
-           itemListener.gestureDetector!!.onTouchEvent(event)
-           false
-       })
-    }*/
 }

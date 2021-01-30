@@ -21,11 +21,12 @@ class ParseItem {
         try {
             val factory = XmlPullParserFactory.newInstance()
             factory.isNamespaceAware = true
-            var xpp = factory.newPullParser()
-            xpp.setInput(StringReader(xmlData))
+            val xpp = factory.newPullParser().also {
+                it.setInput(StringReader(xmlData))
+            }
             var eventType = xpp.eventType
             while (eventType != XmlPullParser.END_DOCUMENT) {
-                var tagName = xpp.name
+                val tagName = xpp.name
                 when(eventType) {
                     XmlPullParser.START_TAG -> {
                         if ("entry" == tagName) {
