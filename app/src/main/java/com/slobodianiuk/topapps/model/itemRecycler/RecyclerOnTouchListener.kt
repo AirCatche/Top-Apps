@@ -1,5 +1,6 @@
 package com.slobodianiuk.topapps.model.itemRecycler
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -34,6 +35,7 @@ class RecyclerItemClickListener(context: Context,recyclerView: RecyclerView,list
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         gestureDetector?.onTouchEvent(event)
         return false
