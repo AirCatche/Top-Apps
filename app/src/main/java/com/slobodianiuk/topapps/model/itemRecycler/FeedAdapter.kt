@@ -15,22 +15,23 @@ import com.slobodianiuk.topapps.model.parse.FeedEntry
 private const val FEED_TYPE_PAID: Int = 0
 private const val FEED_TYPE_FREE: Int = 1
 
-
-class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val itemRV: RecyclerView) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val itemRV: RecyclerView)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     object FeedAConstants {
         const val TAG = "Feed Adapter"
     }
 
-    private var isShownDescription = false
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
-            FEED_TYPE_PAID -> PaidViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.activity_paid_list_record, parent, false))
-            else -> FreeViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.activity_free_list_record, parent, false))
+            FEED_TYPE_PAID ->
+                PaidViewHolder(LayoutInflater.from(parent.context)
+                        .inflate(R.layout.activity_paid_list_record, parent, false))
+            else ->
+                FreeViewHolder(LayoutInflater.from(parent.context)
+                        .inflate(R.layout.activity_free_list_record, parent, false))
         }
     }
-
 
     @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -48,36 +49,62 @@ class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val i
                 val freeVh: FreeViewHolder = holder as FreeViewHolder
                 freeVh.name.text = "${position+1}. ${currentApp.name}"
                 freeVh.artist.text = currentApp.artist
-                if (isShownDescription) {
-                    freeVh.summary.text = currentApp.summary
-                } else if (!isShownDescription){
-                    freeVh.summary.text = null
-                }
+
+                //description, that have to be implemented with click interaction
+                //freeVh.summary.text = null
+
+
             }
         }
-
         val itemListener = RecyclerItemClickListener(holder.itemView.context, itemRV, object : ItemOnClick {
+
+            val type = holder.itemViewType
+            override fun onLongItemClick(v: View?, position: Int) {
+
+
+                Toast.makeText(v?.context, "Open desc for ${1 + position} item", Toast.LENGTH_SHORT).show()
+            }
+
             override fun onDoubleItemClick(v: View?, position: Int) {
-                //val viewType = itemRV.findViewHolderForAdapterPosition(position)?.itemViewType
-                if (isShownDescription) {
-                    isShownDescription = false
-                    notifyItemChanged(position)
-                }
+
                 Toast.makeText(v?.context, "Hide desc for ${1 + position} item", Toast.LENGTH_SHORT).show()
             }
 
-            override fun onLongItemClick(v: View?, position: Int) {
-                if (!isShownDescription) {
-                    Toast.makeText(v?.context, "Open desc for ${1 + position} item", Toast.LENGTH_SHORT).show()
-                    isShownDescription = true
-                    notifyItemChanged(position)
-                }
-
-            }
         })
         itemRV.setOnTouchListener{ _, event ->
             itemListener.gestureDetector!!.onTouchEvent(event)
             false
+        }
+        //                    val d = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+//                        override fun getOldListSize(): Int {
+//                            TODO("Not yet implemented")
+//                        }
+//
+//                        override fun getNewListSize(): Int {
+//                            TODO("Not yet implemented")
+//                        }
+//
+//                        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+//
+//                        }
+//
+//                        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+//                            TODO("Not yet implemented")
+//                        }
+//
+//                    })
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        when (holder.itemViewType) {
+            FEED_TYPE_PAID -> {
+                val paidVh: PaidViewHolder = holder as PaidViewHolder
+                paidVh.summary.text = null
+
+            }
+            FEED_TYPE_FREE -> {
+                val freeVh: FreeViewHolder = holder as FreeViewHolder
+            }
         }
     }
 
@@ -114,7 +141,7 @@ class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val i
         private val scroll: ScrollView = itemView.findViewById(R.id.summaryScroll)
 
         init {
-            makeScrollable(scroll)
+           // makeScrollable(scroll)
         }
     }
 

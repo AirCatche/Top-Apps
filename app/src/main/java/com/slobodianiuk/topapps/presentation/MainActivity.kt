@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private var feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=%d/xml"
     private var feedLimit = 10
     private var feedCachedUrl = ""
+    private var cachedTitle = ""
     private var rssFeed = ""
     private val appList : ArrayList<FeedEntry> = arrayListOf()
     private var handler: Handler? = null
@@ -44,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Log.d(MainConstants.TAG, "onCreate: start")
+        this.title = "$feedLimit " + getString(R.string.free_apps)
         if (savedInstanceState != null) {
             feedUrl = savedInstanceState.getString(MainConstants.STATE_URL).toString()
             feedLimit = savedInstanceState.getInt(MainConstants.STATE_LIMIT)
@@ -58,6 +60,7 @@ class MainActivity : AppCompatActivity() {
 
 
         displayData()
+
         Log.d(MainConstants.TAG, "onCreate: done")
     }
 
@@ -74,20 +77,39 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
-            R.id.mnuFree -> feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=%d/xml"
-            R.id.mnuPaid -> feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topalbums/limit=%d/xml"
-            R.id.mnuSongs -> feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topsongs/limit=%d/xml"
-            R.id.mnu10 -> if (!item.isChecked) {
-                item.isChecked = true
-                feedLimit = 10
+            R.id.mnuFree -> {
+                feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=%d/xml"
+                this.title = "$feedLimit ${getString(R.string.free_apps)}"
+                cachedTitle = getString(R.string.free_apps)
             }
-            R.id.mnu25 -> if (!item.isChecked) {
-                item.isChecked = true
-                feedLimit = 35 - feedLimit
+            R.id.mnuPaid -> {
+                feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topalbums/limit=%d/xml"
+                this.title = "$feedLimit ${getString(R.string.paid_apps)}"
+                cachedTitle = getString(R.string.paid_apps)
             }
+            R.id.mnuSongs -> {
+                feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topsongs/limit=%d/xml"
+                this.title = "$feedLimit ${getString(R.string.songs)}"
+                cachedTitle = getString(R.string.songs)
+            }
+                R.id.mnu10 -> {
+                    if (!item.isChecked) {
+                        item.isChecked = true
+                        feedLimit = 10
+                    }
+                    this.title = "$feedLimit $cachedTitle"
+                }
+                R.id.mnu25 -> {
+                    if (!item.isChecked) {
+                        item.isChecked = true
+                        feedLimit = 35 - feedLimit
+                    }
+                    this.title = "$feedLimit $cachedTitle"
+                }
             R.id.mnuRefresh -> feedCachedUrl = "REFRESH"
             else -> return super.onOptionsItemSelected(item)
         }
+
         downloadUrl(handler, String.format(feedUrl, feedLimit))
         return true
     }
