@@ -5,20 +5,24 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.slobodianiuk.topapps.R
+import com.slobodianiuk.topapps.model.itemRecycler.FeedAdapter.FeedAConstants.FEED_TYPE_FREE
+import com.slobodianiuk.topapps.model.itemRecycler.FeedAdapter.FeedAConstants.FEED_TYPE_PAID
 import com.slobodianiuk.topapps.model.parse.FeedEntry
+import com.squareup.picasso.Picasso
 
-private const val FEED_TYPE_PAID: Int = 0
-private const val FEED_TYPE_FREE: Int = 1
 
 class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val itemRV: RecyclerView)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     object FeedAConstants {
+        const val FEED_TYPE_PAID: Int = 0
+        const val FEED_TYPE_FREE: Int = 1
         const val TAG = "Feed Adapter"
     }
 
@@ -44,28 +48,27 @@ class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val i
                 paidVh.artist.text = (currentApp.artist)
                 paidVh.summary.text = currentApp.summary
                 paidVh.price.text = (currentApp.price)
+                Picasso.get().load(currentApp.imageUrl).into(paidVh.image)
             }
             FEED_TYPE_FREE -> {
                 val freeVh: FreeViewHolder = holder as FreeViewHolder
                 freeVh.name.text = "${position+1}. ${currentApp.name}"
                 freeVh.artist.text = currentApp.artist
+                freeVh.summary.text = currentApp.summary
+                Picasso.get().load(currentApp.imageUrl).into(freeVh.image)
+
 
                 //description, that have to be implemented with click interaction
                 //freeVh.summary.text = null
-
-
             }
         }
         val itemListener = RecyclerItemClickListener(holder.itemView.context, itemRV, object : ItemOnClick {
-
-            val type = holder.itemViewType
             override fun onLongItemClick(v: View?, position: Int) {
-
 
                 Toast.makeText(v?.context, "Open desc for ${1 + position} item", Toast.LENGTH_SHORT).show()
             }
 
-            override fun onDoubleItemClick(v: View?, position: Int) {
+            override fun onItemClick(v: View?, position: Int) {
 
                 Toast.makeText(v?.context, "Hide desc for ${1 + position} item", Toast.LENGTH_SHORT).show()
             }
@@ -95,19 +98,6 @@ class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val i
 //                    })
     }
 
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        when (holder.itemViewType) {
-            FEED_TYPE_PAID -> {
-                val paidVh: PaidViewHolder = holder as PaidViewHolder
-                paidVh.summary.text = null
-
-            }
-            FEED_TYPE_FREE -> {
-                val freeVh: FreeViewHolder = holder as FreeViewHolder
-            }
-        }
-    }
-
     override fun getItemViewType(position: Int): Int {
         return if (application[position].entryType == 0) {
             FEED_TYPE_PAID
@@ -124,12 +114,14 @@ class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val i
         abstract val name: TextView
         abstract val artist: TextView
         abstract val summary: TextView
+        abstract val image : ImageView
     }
 
     class PaidViewHolder(itemView: View) : ItemViewHolder(itemView) {
         override val name: TextView = itemView.findViewById(R.id.tvName)
         override val artist: TextView = itemView.findViewById(R.id.tvArtist)
         override val summary: TextView = itemView.findViewById(R.id.tvSummary)
+        override val image: ImageView = itemView.findViewById(R.id.paidAppImage)
         val price: TextView = itemView.findViewById(R.id.tvPrice)
     }
 
@@ -138,10 +130,11 @@ class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val i
         override val name: TextView = itemView.findViewById(R.id.tvName)
         override val artist: TextView = itemView.findViewById(R.id.tvArtist)
         override val summary: TextView = itemView.findViewById(R.id.tvSummary)
+        override val image: ImageView = itemView.findViewById(R.id.freeAppImage)
         private val scroll: ScrollView = itemView.findViewById(R.id.summaryScroll)
 
         init {
-           // makeScrollable(scroll)
+            makeScrollable(scroll)
         }
     }
 

@@ -5,6 +5,7 @@
     android:id="@+id/paidItemActivity"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="#2B292B"
     tools:context=".presentation.MainActivity">
 
     <TextView
@@ -12,14 +13,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="TextView"
+        android:textColor="#F44336"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/paidAppImage"
+        app:layout_constraintTop_toTopOf="@+id/paidAppImage"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/tvSummary"
@@ -28,34 +31,51 @@
         android:layout_marginTop="8dp"
         android:scrollbars="vertical"
         android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/tvArtist"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/tvPrice"
-        app:layout_constraintTop_toBottomOf="@+id/tvArtist"
-        app:layout_constraintVertical_bias="0.0" />
+        android:textColor="#F6CBCB"
+        app:layout_constraintStart_toStartOf="@+id/paidAppImage"
+        app:layout_constraintTop_toBottomOf="@+id/paidAppImage" />
 
     <TextView
         android:id="@+id/tvArtist"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="TextView"
-        android:textAlignment="viewEnd"
+        android:textAlignment="viewStart"
+        android:textColor="#3F51B5"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/tvName"
-        app:layout_constraintStart_toEndOf="@+id/tvPrice"
-        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvName"
+        app:layout_constraintTop_toBottomOf="@+id/tvName"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/tvPrice"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textAlignment="viewEnd"
+        android:textColor="#1B5E20"
+        android:textSize="18sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toBottomOf="@+id/tvArtist"
+        app:layout_constraintEnd_toEndOf="@+id/tvName"
+        app:layout_constraintStart_toEndOf="@+id/paidAppImage"
+        app:layout_constraintTop_toTopOf="@+id/tvName"
+        app:layout_constraintVertical_bias="0.8" />
+
+    <ImageView
+        android:id="@+id/paidAppImage"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="TextView"
-        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_launcher_background" />
 </androidx.constraintlayout.widget.ConstraintLayout>

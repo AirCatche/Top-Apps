@@ -16,15 +16,13 @@ class RecyclerItemClickListener(context: Context,recyclerView: RecyclerView,list
         listen = listener
         gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
 
-            override fun onDoubleTap(e: MotionEvent?): Boolean {
+            override fun onSingleTapUp(e: MotionEvent?): Boolean {
                 val child = recyclerView.findChildViewUnder(e?.x!!, e.y)
                 if (child != null && listen != null) {
-                    listener.onDoubleItemClick(child, recyclerView.getChildAdapterPosition(child))
+                    listener.onItemClick(child, recyclerView.getChildAdapterPosition(child))
                 }
-                return super.onDoubleTap(e)
+                return super.onSingleTapUp(e)
             }
-
-
             override fun onLongPress(e: MotionEvent?) {
                 val child = recyclerView.findChildViewUnder(e?.x!!, e.y)
                 if (child != null && listen != null) {
@@ -34,8 +32,6 @@ class RecyclerItemClickListener(context: Context,recyclerView: RecyclerView,list
             }
         })
     }
-
-
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         gestureDetector?.onTouchEvent(event)
