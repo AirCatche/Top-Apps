@@ -35,17 +35,16 @@ class MainActivity : AppCompatActivity() {
     private val appList : ArrayList<FeedEntry> = arrayListOf()
     private var handler: Handler? = null
     private val thread = HandlerThread("Thread1")
-
     private var items: RecyclerView? = null
     private var itemAdapter: FeedAdapter<FeedEntry>? = null
     private var itemLayoutManager : RecyclerView.LayoutManager? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Log.d(MainConstants.TAG, "onCreate: start")
         this.title = "$feedLimit " + getString(R.string.free_apps)
+        cachedTitle = getString(R.string.free_apps)
         if (savedInstanceState != null) {
             feedUrl = savedInstanceState.getString(MainConstants.STATE_URL).toString()
             feedLimit = savedInstanceState.getInt(MainConstants.STATE_LIMIT)
@@ -57,24 +56,20 @@ class MainActivity : AppCompatActivity() {
                 attachAdapter(it)
             }
         }
-
-
         displayData()
-
         Log.d(MainConstants.TAG, "onCreate: done")
     }
 
-
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.feeds_menu, menu)
+        menuInflater.inflate(R.menu.feeds_menu, menu!!)
         if (feedLimit == 10) {
-            menu?.findItem(R.id.mnu10)?.isChecked = true
+            menu.findItem(R.id.mnu10)?.isChecked = true
         } else {
-            menu?.findItem(R.id.mnu25)?.isChecked = true
+            menu.findItem(R.id.mnu25)?.isChecked = true
         }
         return true
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.mnuFree -> {
@@ -83,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                 cachedTitle = getString(R.string.free_apps)
             }
             R.id.mnuPaid -> {
-                feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topalbums/limit=%d/xml"
+                feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/toppaidapplications/limit=%d/xml"
                 this.title = "$feedLimit ${getString(R.string.paid_apps)}"
                 cachedTitle = getString(R.string.paid_apps)
             }
@@ -113,6 +108,7 @@ class MainActivity : AppCompatActivity() {
         downloadUrl(handler, String.format(feedUrl, feedLimit))
         return true
     }
+
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
         outState.putString(MainConstants.STATE_URL, feedUrl)
         outState.putInt(MainConstants.STATE_LIMIT, feedLimit)
@@ -152,8 +148,8 @@ class MainActivity : AppCompatActivity() {
             val url = URL(urlPath)
             val connection = url.openConnection()
             val reader = BufferedReader(InputStreamReader(connection.getInputStream()))
-            var charsRead: Int
             val inputBuffer = CharArray(500)
+            var charsRead: Int
             while(true) {
                 charsRead = reader.read(inputBuffer)
                 if (charsRead < 0) {

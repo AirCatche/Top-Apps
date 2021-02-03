@@ -1,17 +1,6 @@
 package com.slobodianiuk.topapps.model.parse
 
-class FeedEntry {
-    var name = ""
-    var artist = ""
-    var releaseData = ""
-    var summary = ""
-    var imageURL = ""
-    var price = ""
-    var entryType = 0
-
-    override fun toString(): String {
-        return "Application = $name \nartist = $artist \nreleaseData = $releaseData \nsummary = $summary \nimageURL = $imageURL \nprice = $price"
-    }
-
+data class FeedEntry(val name: String?, val artist: String?, val releaseData: String?, val summary: String?,
+val imageUrl: String?, val price: String?, val entryType: Int?) {
 
 }

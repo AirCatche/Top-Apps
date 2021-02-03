@@ -1,6 +1,7 @@
 package com.slobodianiuk.topapps.model.parse
 
 import android.util.Log
+import com.slobodianiuk.topapps.model.itemRecycler.FeedAdapter
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.StringReader
@@ -13,9 +14,9 @@ class ParseItem {
 
     fun parse(xmlData: String) : Boolean {
         var status = true
-        var gotImage = false
-        var currentEntry: FeedEntry? = null
         var inEntry = false
+
+        var curEntry: FeedEntry? = null
         var textValue = ""
 
         try {
@@ -31,10 +32,7 @@ class ParseItem {
                     XmlPullParser.START_TAG -> {
                         if ("entry" == tagName) {
                             inEntry = true
-                            currentEntry = FeedEntry()
-                        } else if ("image" == tagName && inEntry) {
-                            val imageResolution = xpp.getAttributeValue(null, "height")
-                            if (imageResolution != null) { gotImage = "53" == imageResolution }
+                            curEntry = FeedEntry(curEntry?.name, curEntry?.artist, curEntry?.releaseData, curEntry?.summary, curEntry?.imageUrl, curEntry?.price, curEntry?.entryType)
                         }
                     }
                     XmlPullParser.TEXT -> {
@@ -44,43 +42,41 @@ class ParseItem {
                         if (inEntry) {
                             when(tagName) {
                                 "entry" -> {
-                                    currentEntry?.let {
-                                        application.add(it)
+                                    if (curEntry != null) {
+                                        application.add(curEntry)
                                     }
                                     inEntry = false
                                 }
                                 "name" -> {
-                                    currentEntry?.name = textValue
+                                    curEntry  = curEntry?.copy(textValue,curEntry.artist,curEntry.releaseData,curEntry.summary,curEntry.imageUrl,curEntry.price,curEntry.entryType)
                                 }
                                 "artist" -> {
-                                    currentEntry?.artist = textValue
+                                    curEntry  = curEntry?.copy(curEntry.name,textValue,curEntry.releaseData,curEntry.summary,curEntry.imageUrl,curEntry.price,curEntry.entryType)
                                 }
                                 "releaseDate" -> {
-                                    currentEntry?.releaseData = textValue
+                                    curEntry  = curEntry?.copy(curEntry.name,curEntry.artist,textValue,curEntry.summary,curEntry.imageUrl,curEntry.price,curEntry.entryType)
                                 }
                                 "price" -> {
-                                    currentEntry?.price = textValue
+                                    curEntry  = curEntry?.copy(curEntry.name,curEntry.artist,curEntry.releaseData,curEntry.summary,curEntry.imageUrl,textValue,curEntry.entryType)
                                     if (textValue == "Get") {
-                                        currentEntry?.entryType = 1
+                                        curEntry  = curEntry?.copy(curEntry.name,curEntry.artist,curEntry.releaseData,curEntry.summary,curEntry.imageUrl,curEntry.price,FeedAdapter.FeedAConstants.FEED_TYPE_FREE)
                                     }
                                 }
                                 "summary" -> {
-                                    currentEntry?.summary = textValue
+                                    curEntry  = curEntry?.copy(curEntry.name,curEntry.artist,curEntry.releaseData,textValue,curEntry.imageUrl,curEntry.price,curEntry.entryType)
                                 }
                                 "image" -> {
-                                    currentEntry?.imageURL = textValue
+                                    curEntry  = curEntry?.copy(curEntry.name,curEntry.artist,curEntry.releaseData,curEntry.summary,textValue,curEntry.price,curEntry.entryType)
                                 }
                             }
-                            //break
                         }
                     }
                     else -> {
-                        print("BLYA") }
+
+                    }
                 }
                 eventType = xpp.next()
             }
-
-
             for (app in application) {
                 println("--------------------------")
                 Log.d(tag, app.toString())
