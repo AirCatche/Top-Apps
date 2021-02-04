@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/freeItemActivity"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
+    android:layout_height="wrap_content"
     android:background="#2B292B"
     tools:context=".presentation.MainActivity">
 
@@ -12,11 +12,11 @@
         android:id="@+id/freeAppImage"
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="7dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvPosition"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_launcher_background" />
@@ -26,8 +26,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="TextView"
-        android:textColor="#4CAF50"
+        android:text="Title "
+        android:textColor="#258F2A"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/freeAppImage"
@@ -39,9 +39,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:text="Artist"
         android:textAlignment="viewStart"
-        android:textColor="#9E7C6B"
+        android:textColor="#DCA184"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/tvName"
         app:layout_constraintStart_toStartOf="@+id/tvName"
@@ -51,9 +51,9 @@
         android:id="@+id/summaryScroll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:soundEffectsEnabled="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/freeAppImage"
         app:layout_constraintTop_toBottomOf="@+id/freeAppImage"
         app:layout_constraintVertical_bias="0.0">
@@ -61,10 +61,11 @@
         <TextView
             android:id="@+id/tvSummary"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:scrollbars="vertical"
+            android:text="Summary ⇓"
             android:textColor="#F6CBCB"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tvArtist"
@@ -74,5 +75,18 @@
             app:layout_constraintVertical_bias="0.0" />
 
     </ScrollView>
+
+    <TextView
+        android:id="@+id/tvPosition"
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="10"
+        android:textAlignment="center"
+        android:textColor="#A8A6A6"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/freeAppImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

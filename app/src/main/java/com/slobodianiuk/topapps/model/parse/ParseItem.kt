@@ -60,6 +60,8 @@ class ParseItem {
                                     curEntry  = curEntry?.copy(curEntry.name,curEntry.artist,curEntry.releaseData,curEntry.summary,curEntry.imageUrl,textValue,curEntry.entryType)
                                     if (textValue == "Get") {
                                         curEntry  = curEntry?.copy(curEntry.name,curEntry.artist,curEntry.releaseData,curEntry.summary,curEntry.imageUrl,curEntry.price,FeedAdapter.FeedAConstants.FEED_TYPE_FREE)
+                                    } else {
+                                        curEntry  = curEntry?.copy(curEntry.name,curEntry.artist,curEntry.releaseData,curEntry.summary,curEntry.imageUrl,curEntry.price,FeedAdapter.FeedAConstants.FEED_TYPE_PAID)
                                     }
                                 }
                                 "summary" -> {
