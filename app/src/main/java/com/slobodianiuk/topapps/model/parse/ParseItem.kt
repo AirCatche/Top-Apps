@@ -11,14 +11,11 @@ class ParseItem {
     private val tag = "Parse application"
     val application: ArrayList<FeedEntry> = arrayListOf()
 
-
     fun parse(xmlData: String) : Boolean {
         var status = true
         var inEntry = false
-
         var curEntry: FeedEntry? = null
         var textValue = ""
-
         try {
             val factory = XmlPullParserFactory.newInstance()
             factory.isNamespaceAware = true
@@ -73,9 +70,7 @@ class ParseItem {
                             }
                         }
                     }
-                    else -> {
-
-                    }
+                    else -> { }
                 }
                 eventType = xpp.next()
             }

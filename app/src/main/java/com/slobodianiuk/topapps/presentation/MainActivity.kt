@@ -45,11 +45,6 @@ class MainActivity : AppCompatActivity() {
         Log.d(MainConstants.TAG, "onCreate: start")
         this.title = "$feedLimit " + getString(R.string.free_apps)
         cachedTitle = getString(R.string.free_apps)
-        if (savedInstanceState != null) {
-            feedUrl = savedInstanceState.getString(MainConstants.STATE_URL).toString()
-            feedLimit = savedInstanceState.getInt(MainConstants.STATE_LIMIT)
-        }
-
         items = findViewById(R.id.xmlRecyclerView)
         items.let {
             if (it != null) {
@@ -57,6 +52,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
         displayData()
+
+        if (savedInstanceState != null) {
+            feedUrl = savedInstanceState.getString(MainConstants.STATE_URL).toString()
+            feedLimit = savedInstanceState.getInt(MainConstants.STATE_LIMIT)
+        }
         Log.d(MainConstants.TAG, "onCreate: done")
     }
 
@@ -162,11 +162,11 @@ class MainActivity : AppCompatActivity() {
             reader.close()
             return xmlResult.toString()
         } catch (e: MalformedURLException) {
-            Log.e(MainConstants.TAG, "downloadXml: Invalid URL ${e.message}" )
+            Log.e(MainConstants.TAG, "downloadXm: Invalid URL ${e.message}" )
         } catch (e: IOException) {
-            Log.e(MainConstants.TAG, "downloadXml: IO exception ${e.message}" )
+            Log.e(MainConstants.TAG, "downloadXm: IO exception ${e.message}" )
         } catch (e: SecurityException) {
-            Log.e(MainConstants.TAG, "downloadXml: Security exception ${e.message}" )
+            Log.e(MainConstants.TAG, "downloadXm: Security exception ${e.message}" )
         }
         return ""
     }

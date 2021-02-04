@@ -33,7 +33,6 @@
         app:layout_constraintStart_toEndOf="@+id/freeAppImage"
         app:layout_constraintTop_toTopOf="@+id/freeAppImage" />
 
-
     <TextView
         android:id="@+id/tvArtist"
         android:layout_width="0dp"

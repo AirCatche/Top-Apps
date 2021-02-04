@@ -69,9 +69,6 @@ class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val i
                     freeVh.summary.text = ""
                 }
                 Picasso.get().load(currentApp.imageUrl).into(freeVh.image)
-
-
-
             }
         }
         val itemListener = RecyclerItemClickListener(holder.itemView.context, itemRV, object : ItemOnClick {
@@ -85,7 +82,6 @@ class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val i
                 notifyItemChanged(position)
                 Toast.makeText(v?.context, "Hide desc for ${1 + position} item", Toast.LENGTH_SHORT).show()
             }
-
         })
         itemRV.setOnTouchListener{ _, event ->
             itemListener.gestureDetector!!.onTouchEvent(event)
