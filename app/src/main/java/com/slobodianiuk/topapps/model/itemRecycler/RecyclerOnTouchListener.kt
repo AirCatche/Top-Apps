@@ -15,7 +15,6 @@ class RecyclerItemClickListener(context: Context,recyclerView: RecyclerView,list
     init {
         listen = listener
         gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-
             override fun onSingleTapUp(e: MotionEvent?): Boolean {
                 val child = recyclerView.findChildViewUnder(e?.x!!, e.y)
                 if (child != null && listen != null) {

@@ -11,16 +11,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.slobodianiuk.topapps.R
-import com.slobodianiuk.topapps.model.itemRecycler.FeedAdapter.FeedAConstants.FEED_TYPE_FREE
-import com.slobodianiuk.topapps.model.itemRecycler.FeedAdapter.FeedAConstants.FEED_TYPE_PAID
 import com.slobodianiuk.topapps.model.parse.FeedEntry
 import com.squareup.picasso.Picasso
 
-
-class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val itemRV: RecyclerView)
+class FeedAdapter(private val application: List<FeedEntry>, private val itemRV: RecyclerView)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    object FeedAConstants {
+    companion object FeedAConstants {
         const val FEED_TYPE_PAID: Int = 0
         const val FEED_TYPE_FREE: Int = 1
         const val TAG = "Feed Adapter"
@@ -41,7 +38,7 @@ class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val i
     @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentApp = application[position]
-        Log.d(FeedAConstants.TAG, "onBindViewHolder: ($position)")
+        Log.d(TAG, "onBindViewHolder: ($position)")
         when(holder.itemViewType) {
             FEED_TYPE_PAID -> {
                 val paidVh: PaidViewHolder = holder as PaidViewHolder
@@ -69,21 +66,15 @@ class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val i
                     freeVh.summary.text = ""
                 }
                 Picasso.get().load(currentApp.imageUrl).into(freeVh.image)
-
-
-
             }
         }
         val itemListener = RecyclerItemClickListener(holder.itemView.context, itemRV, object : ItemOnClick {
             override fun onLongItemClick(v: View?, position: Int) {
-
-                Toast.makeText(v?.context, "Open desc for ${1 + position} item", Toast.LENGTH_SHORT).show()
             }
 
             override fun onItemClick(v: View?, position: Int) {
                 isClicked = click(isClicked)
                 notifyItemChanged(position)
-                Toast.makeText(v?.context, "Hide desc for ${1 + position} item", Toast.LENGTH_SHORT).show()
             }
 
         })
@@ -91,24 +82,6 @@ class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val i
             itemListener.gestureDetector!!.onTouchEvent(event)
             false
         }
-        //                    val d = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-//                        override fun getOldListSize(): Int {
-//                            TODO("Not yet implemented")
-//                        }
-//
-//                        override fun getNewListSize(): Int {
-//                            TODO("Not yet implemented")
-//                        }
-//
-//                        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-//
-//                        }
-//
-//                        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-//                            TODO("Not yet implemented")
-//                        }
-//
-//                    })
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -149,10 +122,6 @@ class FeedAdapter<T : FeedEntry>(private val application: List<T>, private val i
         override val summary: TextView = itemView.findViewById(R.id.tvSummary)
         override val image: ImageView = itemView.findViewById(R.id.freeAppImage)
         private val scroll: ScrollView = itemView.findViewById(R.id.summaryScroll)
-
-        init {
-            //makeScrollable(scroll)
-        }
     }
 
 }

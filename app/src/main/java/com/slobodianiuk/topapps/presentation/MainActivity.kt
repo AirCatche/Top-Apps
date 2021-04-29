@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     private var handler: Handler? = null
     private val thread = HandlerThread("Thread1")
     private var items: RecyclerView? = null
-    private var itemAdapter: FeedAdapter<FeedEntry>? = null
+    private var itemAdapter: FeedAdapter? = null
     private var itemLayoutManager : RecyclerView.LayoutManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

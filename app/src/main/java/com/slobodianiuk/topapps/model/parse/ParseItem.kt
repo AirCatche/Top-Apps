@@ -7,18 +7,14 @@ import org.xmlpull.v1.XmlPullParserFactory
 import java.io.StringReader
 
 class ParseItem {
-
     private val tag = "Parse application"
     val application: ArrayList<FeedEntry> = arrayListOf()
-
 
     fun parse(xmlData: String) : Boolean {
         var status = true
         var inEntry = false
-
         var curEntry: FeedEntry? = null
         var textValue = ""
-
         try {
             val factory = XmlPullParserFactory.newInstance()
             factory.isNamespaceAware = true
@@ -59,9 +55,9 @@ class ParseItem {
                                 "price" -> {
                                     curEntry  = curEntry?.copy(curEntry.name,curEntry.artist,curEntry.releaseData,curEntry.summary,curEntry.imageUrl,textValue,curEntry.entryType)
                                     if (textValue == "Get") {
-                                        curEntry  = curEntry?.copy(curEntry.name,curEntry.artist,curEntry.releaseData,curEntry.summary,curEntry.imageUrl,curEntry.price,FeedAdapter.FeedAConstants.FEED_TYPE_FREE)
+                                        curEntry  = curEntry?.copy(curEntry.name,curEntry.artist,curEntry.releaseData,curEntry.summary,curEntry.imageUrl,curEntry.price,FeedAdapter.FEED_TYPE_FREE)
                                     } else {
-                                        curEntry  = curEntry?.copy(curEntry.name,curEntry.artist,curEntry.releaseData,curEntry.summary,curEntry.imageUrl,curEntry.price,FeedAdapter.FeedAConstants.FEED_TYPE_PAID)
+                                        curEntry  = curEntry?.copy(curEntry.name,curEntry.artist,curEntry.releaseData,curEntry.summary,curEntry.imageUrl,curEntry.price,FeedAdapter.FEED_TYPE_PAID)
                                     }
                                 }
                                 "summary" -> {
@@ -73,15 +69,9 @@ class ParseItem {
                             }
                         }
                     }
-                    else -> {
-
-                    }
+                    else -> { }
                 }
                 eventType = xpp.next()
-            }
-            for (app in application) {
-                println("--------------------------")
-                Log.d(tag, app.toString())
             }
         } catch (e: Exception) {
             status = false
